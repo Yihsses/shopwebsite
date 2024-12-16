@@ -24,7 +24,7 @@ npm run lint
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 
-/*
+
  *                        _oo0oo_
  *                       o8888888o
  *                       88" . "88
@@ -48,4 +48,4 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
  *      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * 
  *            佛祖保佑       永不宕机     永无BUG
- */
+ 
