@@ -18,12 +18,12 @@
             <input type="checkbox" id="showDrop" />
             <label for="showDrop" class="mobile_item">Dropdown Menu</label>
             <ul class="drop_menu">
-              <li><a href="#">Drop Menu 1</a></li>
-              <li><a href="#">Drop Menu 2</a></li>
-              <li><a href="#">Drop Menu 3</a></li>
-              <li><a href="#">Drop Menu 4</a></li>
-              <li><a href="#">Drop Menu 5</a></li>
-              <li><a href="#">Drop Menu 6</a></li>
+              <li><a href="#">Sakamata Chloe</a></li>
+              <li><a href="#">Tokoyami Towa</a></li>
+              <li><a href="#">yhisses</a></li>
+              <li><a href="#">Big Chi Chi</a></li>
+              <li><a href="#">ZRE</a></li>
+              <li><a href="#">Shishiro Botan</a></li>
             </ul>
           </li>
           <li>
