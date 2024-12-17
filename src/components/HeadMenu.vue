@@ -38,7 +38,7 @@
             </ul>
           </li>
           <li><a href="#">常見問題</a></li>
-          <li><a href="/shopwebsite/Login">會員</a></li>
+          <li><a href="/shopwebsite/member">會員</a></li>
 
           <li>
             <!-- 購物車按鈕 -->

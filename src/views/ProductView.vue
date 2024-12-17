@@ -50,6 +50,7 @@
             this.title = response.data[0].Product_name
             this.product_info = response.data
             this.Descrip = response.data[0].Descrip.replace(/\n/g,'<br>')
+            console.log(response.data[0].Image_path)
             this.test_path =  require(`@/assets/images/${ response.data[0].Image_path}`)
             console.log( this.Descrip)
            

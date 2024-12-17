@@ -14,8 +14,9 @@ const { cookies } = useCookies();
     methods:{
         signout(){
           try{
-            alert("登出成功")
             cookies.remove('token');
+            cookies.get('token');
+            alert("登出成功")
             this.$router.push('/');
           }catch{
             alert("登出失敗")
