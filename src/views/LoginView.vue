@@ -12,10 +12,6 @@ import HeadMenu from '../components/HeadMenu.vue'
 import LoginComp from '@/components/LoginComp.vue';
 
 
-
-
-
-
 export default {
     name: 'MemberView',
     components: {

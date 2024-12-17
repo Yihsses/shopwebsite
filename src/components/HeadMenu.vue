@@ -71,7 +71,7 @@
                     <!-- 操作按鈕 -->
                     <v-col class="text-center">
                     <v-btn color="purple lighten-2" large>
-                        <a href="/shopwebsite/about" style="color: white; text-decoration: none;">ショッピングを開始する</a>
+                        <a href="/shopwebsite/product" style="color: white; text-decoration: none;">ショッピングを開始する</a>
                     </v-btn>
                     </v-col>
                 </v-row>
@@ -121,7 +121,7 @@ nav .wrapper {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  top:10px
+  top:5px
 }
 
 .wrapper .nav_links {
@@ -130,7 +130,7 @@ nav .wrapper {
 
 .wrapper .logo,image {
   position: relative;
-  top: 10px;
+  top: 0px;
 
 }
 
