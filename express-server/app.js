@@ -16,8 +16,9 @@ const secretKey = 'DEMO';
 
 app.use(cors({  
     origin:['http://localhost:8080'],
-    methods:['GET','POST','DELETE'],
-    
+    methods:['POST','GET','DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
 }));
 app.all('*', function (req, res, next) {
   let originHeader=req.headers.origin;
@@ -27,9 +28,10 @@ app.all('*', function (req, res, next) {
   res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
   res.header("X-Powered-By", ' 3.2.1')
   res.header("Content-Type", "application/json;charset=utf-8");
-  res.header("Access-Control-Allow-Credentials", true);
+  res.header("Access-Control-Allow-Credentials",true);
   next();
 });
+app.use(express.urlencoded({ extended: true }))
 const port = 3002
 
 var mysql = require('mysql');
