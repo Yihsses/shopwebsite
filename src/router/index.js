@@ -5,6 +5,7 @@ import LoginView from '../views/LoginView.vue'
 import MemberView from '../views/MemberView.vue'
 import ProductView from '../views/ProductView.vue'
 import RegisterView from '../views/RegisterView.vue'
+import CheckoutView from '@/views/CheckoutView.vue'
 import { jwtDecode } from "jwt-decode";
 import { useCookies } from "vue3-cookies";
 const { cookies } = useCookies();
@@ -45,6 +46,11 @@ const routes = [
     path:'/register',
     name: 'register',
     component: RegisterView,
+  },
+  {
+    path:'/checkout',
+    name:'checkout',
+    component: CheckoutView,
   }
 ];
 
@@ -69,15 +75,7 @@ router.beforeEach((to, from, next) => {
     // 其他頁面，正常進行路由跳轉
     next();
   }
-  if(to.name == 'login'){
-    if(cookies.get('token') != null)  {
-      if (!(to.meta.Islogined || !(jwtDecode(cookies.get('token')).LoggedIn))) {
-        return {
-          path: '/member',
-        }
-      }
-    }
-  } 
+
 });
 
 export default router;

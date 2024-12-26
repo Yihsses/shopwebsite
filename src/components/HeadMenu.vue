@@ -71,7 +71,7 @@
 
       <v-col class="text-center" cols="12" v-if="cartItems.length > 0">
         <v-btn color="purple lighten-2" large>
-          <a href="/shopwebsite/product" style="color: white; text-decoration: none;">ショッピングを開始する</a>
+          <a href="/shopwebsite/checkout" style="color: white; text-decoration: none;">結帳</a>
         </v-btn>
       </v-col>
     </v-row>

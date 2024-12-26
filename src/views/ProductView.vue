@@ -85,6 +85,7 @@ export default {
         // 顯示成功加入購物車的訊息
         if (response.data.success) {
           alert("商品已成功加入購物車!");
+          window.location.reload();
         } else {
           alert("加入購物車失敗，請稍後再試");
         }
