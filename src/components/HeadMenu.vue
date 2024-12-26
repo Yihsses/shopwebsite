@@ -54,7 +54,7 @@
     </nav>
 
         <!-- 購物車抽屜 -->
-        <v-navigation-drawer
+        <v-navigation-drawer :width="400"
             v-model="drawerVisible"
             color="grey-lighten-2"
             location="end"
