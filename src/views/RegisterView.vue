@@ -85,6 +85,7 @@
   
   <script>
   import HeadMenu from "../components/HeadMenu.vue";
+  import axios from 'axios';
   
   export default {
     name: "RegisterForm",
@@ -118,9 +119,27 @@
       };
     },
     methods: {
-      register() {
-        // Add your registration logic here
-        console.log("Form submitted");
+      async register() {
+        try {
+          const response = await axios.post('http://localhost:3002/api/member/register', {
+            email: this.email,
+            password: this.password,
+            username: this.firstname + this.lastname
+          });
+
+          if (response.data.success) {
+            // 註冊成功
+            alert(response.data.message);
+            // 導向登入頁面
+            this.$router.push('/Login');
+          } else {
+            // 註冊失敗
+            alert(response.data.message);
+          }
+        } catch (error) {
+          console.error('註冊錯誤:', error);
+          alert('註冊失敗，請稍後再試');
+        }
       },
     },
   };
