@@ -227,8 +227,11 @@ h1 {
 
 /* 圖片顯示樣式 */
 .product-table td img {
-  max-width: 100px;  /* 可調整寬度 */
-  max-height: 100px; /* 可調整高度 */
+  max-width: 100px;  /* 調整圖片寬度 */
+  max-height: 100px; /* 調整圖片高度 */
   object-fit: cover;  /* 保持圖片比例 */
+  display: block;     /* 讓圖片成為區塊級元素 */
+  margin: 0 auto;     /* 使圖片居中顯示 */
+  padding-left: 10px;  /* 可選：增加左邊間距 */
 }
 </style>
