@@ -40,7 +40,14 @@
                   required
                 ></v-text-field>
               </v-col>
-  
+              <v-col cols="12" md="12">
+              <v-text-field
+                v-model="phone"
+                :rules="phoneRules"
+                label="Phone Number"
+                required
+              ></v-text-field>
+            </v-col>
               <!-- Password -->
               <v-col cols="12">
                 <v-text-field
@@ -100,6 +107,7 @@
         email: "",
         password: "",
         confirmPassword: "",
+        phone: "",
         nameRules: [
           (v) => !!v || "Name is required",
           (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
@@ -116,15 +124,20 @@
           (v) => !!v || "Please confirm your password",
           (v) => v === this.password || "Passwords do not match",
         ],
+        phoneRules: [
+      (v) => !!v || "Phone number is required",
+      (v) => /^[0-9]{10}$/.test(v) || "Phone number must be 10 digits",
+        ],
       };
     },
     methods: {
       async register() {
         try {
-          const response = await axios.post('http://localhost:3002/api/member/register', {
+          const response = await axios.post('http://localhost:3002/seller/api/seller/updateProduct', {
             email: this.email,
             password: this.password,
-            username: this.firstname + this.lastname
+            username: this.firstname + this.lastname,
+            phone : this.phone, // 添加手机号
           });
 
           if (response.data.success) {

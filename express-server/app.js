@@ -3,7 +3,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var logger = require('morgan');
-
+var sellerRouter = require('./routes/seller')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const jwt = require("jsonwebtoken");
@@ -57,7 +57,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
+app.use('/seller', sellerRouter);
 app.use(session({
   secret: 'chh',
   cookie:{

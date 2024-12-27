@@ -71,6 +71,7 @@ router.get('/api/member/CheckMemberAccount',function(req,res,next){
   });
 });
 
+
 router.get('/api/product/GetProductInfo',function(req,res,next){
   let Product_id =  req.query.id;
   var sql = `select * from product where Product_id = '${Product_id}' ;`;
@@ -83,6 +84,9 @@ router.get('/api/product/GetProductInfo',function(req,res,next){
     }
   });
 });
+
+
+
 router.post('/api/cart/PostProductCart', function(req, res, next) {
   console.log("成功");
   // 從請求中提取會員 ID、商品 ID 和數量
@@ -123,13 +127,13 @@ router.post('/api/cart/PostProductCart', function(req, res, next) {
     }
   });
 });
-
+  
 router.post('/api/member/register', function(req, res) {
   // 獲取註冊表單資料
   const email = encodeURIComponent(req.body.email).replace("%40","@");
   const password = req.body.password;
   const username = req.body.username;
-  
+  const phone = req.body.phone ; 
   // 先檢查 email 是否已經存在
   const checkEmailSql = `SELECT Email FROM member WHERE Email = '${email}'`;
   
@@ -160,7 +164,7 @@ router.post('/api/member/register', function(req, res) {
       Member_state, 
       Authority
       ) VALUES (
-      '0000000000',
+      '${phone}',
       '${email}',
       '${username}',
       '${password}',
