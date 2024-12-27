@@ -5,6 +5,9 @@ import LoginView from '../views/LoginView.vue'
 import MemberView from '../views/MemberView.vue'
 import ProductView from '../views/ProductView.vue'
 import RegisterView from '../views/RegisterView.vue'
+import SellerStore from '../seller/SellerStoreView.vue'
+import EditProduct from '../seller/EditProductView.vue'
+import AddProductView from '../seller/AddProductView.vue'
 import { jwtDecode } from "jwt-decode";
 import { useCookies } from "vue3-cookies";
 const { cookies } = useCookies();
@@ -45,6 +48,21 @@ const routes = [
     path:'/register',
     name: 'register',
     component: RegisterView,
+  },
+  {
+    path: '/store',
+    name: 'SellerStore',
+    component: SellerStore,
+  },
+  {
+    path: '/editProduct/:id',
+    name: 'EditProduct',
+    component: EditProduct,
+  },
+  {
+    path: '/addProduct',
+    name: 'AddProduct',
+    component: AddProductView,
   }
 ];
 

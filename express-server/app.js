@@ -13,11 +13,12 @@ const cors = require('cors');
 
 const secretKey = 'DEMO';
 
-
-app.use(cors({  
-    origin:['http://localhost:8080'],
-    methods:['GET','POST','DELETE'],
-    
+app.use(cors({
+  origin: ['http://localhost:8082'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Content-Length', 'Authorization', 'Accept', 'X-Requested-With'],
+  credentials: true,
+  optionsSuccessStatus: 200
 }));
 app.all('*', function (req, res, next) {
   let originHeader=req.headers.origin;
@@ -36,7 +37,7 @@ var mysql = require('mysql');
 var dp = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: '1234',
+    password: '0802',
     database:'node.js-test',
     port: 3306
 });

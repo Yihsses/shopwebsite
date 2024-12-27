@@ -1,6 +1,8 @@
 <template>
     <div class="about">
       <h1>This is an member page</h1>
+      <button class="seller_store" type="button" @click="goto_store">goto_store</button>
+      <br>
       <button class="sign_out" type="button" @click="signout">sign_out</button>
     </div>
 </template>
@@ -21,7 +23,9 @@ const { cookies } = useCookies();
           }catch{
             alert("登出失敗")
           }
-
+        },
+        goto_store(){
+          this.$router.push(`/store`);
         }
     }
   }

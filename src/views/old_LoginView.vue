@@ -32,8 +32,7 @@ axios.defaults.withCredentials = true
 // console.log(cookies.get('LoggedIn'));
 // axios.get('http://localhost:3002/api/member/CheckMemberAccount?account=Yihss&password=1234');
 
-  // 设置cookie
-  // 获取
+  // 
  // v2
 export default {
     name: 'MemberView' ,
@@ -53,8 +52,8 @@ export default {
                         password: this.password
                     }
                 });
-             //   console.log(response.data);
-                if (response.data.success) {
+                //   console.log(response.data);
+                if (response.data.success) {                   
                     cookies.set('token',response.data.token);
 
                     alert('登入成功');
