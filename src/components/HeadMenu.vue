@@ -54,43 +54,113 @@
     </nav>
 
         <!-- 購物車抽屜 -->
-        <v-navigation-drawer
-            v-model="drawerVisible"
-            color="grey-lighten-2"
-            location="end"
-            temporary
-        >
-            <!-- 抽屜內容 -->
-            <v-container class="d-flex justify-center align-center h-100">
-                <!-- 提示文字 -->
-                <v-row>
-                    <v-col class="text-center" cols="12">
-                        <p style="margin-bottom: 16px;">カートが空です</p>
-                    </v-col>
+        <v-navigation-drawer :width="400" v-model="drawerVisible" color="grey-lighten-2" location="end" temporary>
+  <v-container class="d-flex justify-center align-center h-100">
+    <v-row>
+      <v-col v-if="cartItems.length === 0" class="text-center" cols="12">
+        <p style="margin-bottom: 16px;">カートが空です</p>
+      </v-col>
 
-                    <!-- 操作按鈕 -->
-                    <v-col class="text-center">
-                    <v-btn color="purple lighten-2" large>
-                        <a href="/shopwebsite/product" style="color: white; text-decoration: none;">ショッピングを開始する</a>
-                    </v-btn>
-                    </v-col>
-                </v-row>
+      <v-col v-for="(item, index) in cartItems" :key="index" class="d-flex align-center" cols="12">
+        <v-img :src="item.Image_path" width="100px" height="100px" class="mr-3"></v-img>
+        <div class="text-container" style="flex-grow: 1;">
+          <p>{{ item.Product_Id }} - {{ item.price }}円 x {{ item.Quantity }}</p>
+        </div>
+        <v-btn color="red" @click="removeCartItem(item.Product_Id)">移除</v-btn>
+      </v-col>
 
-                
-            </v-container>
-        </v-navigation-drawer>
+      <v-col class="text-center" cols="12" v-if="cartItems.length > 0">
+        <v-btn color="purple lighten-2" large>
+          <a href="/shopwebsite/checkout" style="color: white; text-decoration: none;">結帳</a>
+        </v-btn>
+      </v-col>
+    </v-row>
+  </v-container>
+</v-navigation-drawer>
 
     </div>
 
 </template>
 
 <script>
+import { useCookies } from "vue3-cookies";
+const { cookies } = useCookies();
+import axios from "axios"
+import { jwtDecode } from "jwt-decode";
 export default {
   name: "HeadMenu",
   data() {
     return {
       drawerVisible: false, // 控制購物車抽屜的開關
+      cartItems: [],
     };
+  },
+  methods:{
+    fetchCartItems() {
+  // 獲取並解碼 JWT token 以取得 member_id
+  const token = cookies.get('token'); // 從 cookies 取得 token
+  if (token) {
+    try {
+      const decodedToken = jwtDecode(token); // 解碼 token
+      const memberId = decodedToken.Member_Id; // 確保你的 token 中包含 Member_Id
+      
+      // 發送請求到後端獲取該會員的購物車資料
+      axios.get("http://localhost:3002/api/cart/GetCartItems", {
+        params: { member_id: memberId },
+      })
+      .then((response) => {
+        // 遍歷返回的資料，更新圖片路徑為完整的 URL
+        this.cartItems = response.data.map((item) => {
+          return {
+            ...item,
+            Image_path: require(`@/assets/images/${item.Image_path}`), // 解析圖片路徑
+          };
+        });
+      })
+      .catch((error) => {
+        console.error("獲取購物車資料失敗", error);
+      });
+    } catch (error) {
+      console.error("解碼 token 失敗", error);
+    }
+  } else {
+    console.log("沒有找到 token");
+  }
+},
+    removeCartItem(productId) {
+  const token = cookies.get('token'); // 從 cookies 獲取 token
+  if (token) {
+    try {
+      const decodedToken = jwtDecode(token); // 解碼 token
+      const memberId = decodedToken.Member_Id; // 取得會員 ID
+
+      axios.delete("http://localhost:3002/api/cart/RemoveCartItem", {
+        data: {
+          member_id: memberId,
+          product_id: productId,
+        },
+      })
+        .then((response) => {
+          if (response.data.success) {
+            // 移除成功，重新加載購物車資料
+            this.fetchCartItems();
+          } else {
+            console.error(response.data.message);
+          }
+        })
+        .catch((error) => {
+          console.error("移除購物車商品失敗", error);
+        });
+    } catch (error) {
+      console.error("解碼 token 失敗", error);
+    }
+  } else {
+    console.log("沒有找到 token");
+  }
+}
+  }, mounted() {
+    // 當組件掛載後立即載入購物車資料
+    this.fetchCartItems();
   },
 };
 </script>

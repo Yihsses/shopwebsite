@@ -35,7 +35,7 @@
 import { useCookies } from "vue3-cookies";
 const { cookies } = useCookies();
 import axios from "axios"
-
+import { jwtDecode } from "jwt-decode";
 axios.defaults.withCredentials = true
 
 export default {
@@ -56,7 +56,7 @@ export default {
                 //   console.log(response.data);
                 if (response.data.success) {
                     cookies.set('token', response.data.token);
-
+                    console.log(jwtDecode(cookies.get('token')).Member_Id)
                     alert('登入成功');
                     this.$router.push('/');
 
