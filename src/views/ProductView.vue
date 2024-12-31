@@ -25,6 +25,32 @@
           ></v-select>
 
           <button @click="HandleBuy" class="BuyButton">購買</button>
+
+          <!-- 顧客評論與給分 -->
+          <div class="review-section">
+            <v-rating v-model="rating" :length="5" color="yellow" background-color="grey lighten-2"></v-rating>
+            <v-textarea
+              v-model="review"
+              label="Leave a review"
+              rows="3"
+              outlined
+              class="review-textarea"
+            ></v-textarea>
+            <v-btn @click="submitReview" color="primary" class="submit-review-btn">提交評論</v-btn>
+
+            <!-- 顯示所有評論 -->
+            <div v-if="reviews.length" class="reviews-display">
+              <v-card v-for="(item, index) in reviews" :key="index" class="review-card">
+                <v-row>
+                  <conso class="log"></conso>
+                  <v-rating :model-value="item.rating" :length="5" color="yellow" background-color="grey lighten-2" readonly></v-rating>
+                </v-row>
+                <v-row>
+                  <p class="review-text">{{ item.text }}</p>
+                </v-row>
+              </v-card>
+            </div>
+          </div>
         </v-sheet>
       </v-col>
     </v-row>
@@ -50,6 +76,9 @@ export default {
       title: null,
       quantity: 1,  // 初始購買數量設為 1
       quantityOptions: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],  // 可選擇的數量範圍
+      rating: 0, // 評分
+      review: "", // 評論文字
+      reviews: [], // 所有評論
       product_info: axios
         .get("http://localhost:3002/api/product/GetProductInfo", {
           params: {
@@ -92,6 +121,18 @@ export default {
       } catch (error) {
         console.error("加入購物車時發生錯誤:", error);
         alert("加入購物車失敗，請稍後再試");
+      }
+    },
+    submitReview() {
+      if (this.rating > 0 && this.review.trim()) {
+        this.reviews.push({
+          rating: this.rating,
+          text: this.review
+        });
+        this.rating = 0;
+        this.review = "";
+      } else {
+        alert("請提供評分和評論！");
       }
     }
   }
@@ -138,5 +179,31 @@ export default {
 .quantity-select {
   margin-top: 20px;
   width: 100%;
+}
+
+.review-section {
+  margin-top: 40px;
+}
+
+.review-textarea {
+  margin-top: 10px;
+}
+
+.submit-review-btn {
+  margin-top: 10px;
+}
+
+.reviews-display {
+  margin-top: 20px;
+}
+
+.review-card {
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.review-text {
+  color: gray;
+  font-size: 14px;
 }
 </style>
