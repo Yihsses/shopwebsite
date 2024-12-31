@@ -41,7 +41,11 @@
 </template>
 
 <script>
+
 import axios from "axios";
+import { useCookies } from "vue3-cookies";
+const { cookies } = useCookies();
+import { jwtDecode } from "jwt-decode";
 
 export default {
   data() {
@@ -51,6 +55,7 @@ export default {
         quantity: 0,
         price: 0,
         description: "",
+        memberid:  jwtDecode(cookies.get('token')).Member_Id , 
         image: null,
       },
       base64Image: null, // 用於存儲 Base64 格式的圖片
@@ -86,9 +91,10 @@ export default {
           price: this.newProduct.price,
           quantity: this.newProduct.quantity,
           description : this.newProduct.description, 
+          memberid : this.newProduct.memberid,
           base64 :this.base64Image 
         });
-
+          
         if (response.data.success) {
           alert("商品新增成功！");
           this.$router.push("/store");

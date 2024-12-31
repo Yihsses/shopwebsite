@@ -10,13 +10,16 @@
         <h2>Your Orders</h2>
         <ul class="order-list" v-if="orders.length > 0">
           <li v-for="(order, index) in orders" :key="index" class="order-item">
-            <p>Order ID: {{ order.id }}</p>
-            <p>Total: {{ order.totalAmount }}円</p>
-            <p>Date: {{ order.date }}</p>
+            <p>Order ID: {{ order.Order_Id }}</p>
+            <p>Total: {{ order.Fee }}円</p>
+            <p>Date: {{ order.Order_date }}</p>
+            <p>Status: {{ order.Status }}</p>
             <p>Items:</p>
             <ul>
               <li v-for="(item, i) in order.items" :key="i">
-                {{ item.Product_Name }} x {{ item.Quantity }} - {{ item.price }}円
+               {{item.Product_name}} x {{ item.Quantity }} - {{ item.Price}}円
+               
+                <!-- {{ item.Product_name }} x {{ item.Quantity }} - {{ item.price }}円 -->
               </li>
             </ul>
           </li>
@@ -44,7 +47,8 @@ export default {
   },
   data() {
     return {
-      orders: [] // 儲存用戶的訂單資料
+      orders: [], // 儲存用戶的訂單資料
+      detail_orders:[]
     };
   },
   methods: {
@@ -56,7 +60,9 @@ export default {
           params: { member_id: memberId }
         })
         .then(response => {
-          this.orders = response.data.orders || [];
+          console.log(response.data.data)
+          this.orders = response.data.data || [];
+
         })
         .catch(error => {
           console.error('Failed to fetch orders:', error);
@@ -105,6 +111,8 @@ export default {
   max-width: 600px;
   width: 100%;
   text-align: center;
+  height: auto;  /* 保證內容區域會隨內容增長 */
+  min-height: 400px;  /* 設置最小高度，避免頁面內容被壓縮 */
 }
 
 h1 {
@@ -134,6 +142,8 @@ p {
 .order-list {
   list-style: none;
   padding: 0;
+  max-height: 500px; /* 設置最大高度 */
+  overflow-y: auto;  /* 當內容超出時顯示垂直滾動條 */
 }
 
 .order-item {

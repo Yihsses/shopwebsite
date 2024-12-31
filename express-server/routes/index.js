@@ -128,62 +128,7 @@ router.post('/api/cart/PostProductCart', function(req, res, next) {
     }
   });
 });
-  router.post("/api/seller/updateProduct", (req, res) => {
 
-    const Product_name =  req.body.name ; 
-    const Price =  req.body.price ; 
-    const Quantity = req.body.quantity; 
-    const Descrip =  req.body.description; 
-    const Base64 =  req.body.base64 ; 
-
-
-    // 確保必須欄位不為空
-    if ( !Product_name || !Price || !Quantity || Descrip === undefined) {
-      return res.status(400).json({
-        success: false,
-        message: "請提供完整的商品資訊",
-      });
-    }
-
-    // 更新商品資訊的 SQL 語句
-    const sql = `
-            INSERT INTO product(Product_name,Quantity,Price,Descrip,Image_path) 
-            Value(
-            '${Product_name}',
-            '${Price}',
-            '${Quantity}',
-            '${Descrip}',
-            '${Base64}',
-            ) 
-        `
-    ;
-  
-    // 執行 SQL 更新操作
-    dp.query(sql,(err, result) => {
-        if (err) {
-          console.error("更新商品失敗:", err);
-          return res.status(500).json({
-            success: false,
-            message: "更新商品資訊失敗，請稍後再試",
-          });
-        }
-  
-        // 檢查是否有更新的行數
-        if (result.affectedRows === 0) {
-          return res.status(404).json({
-            success: false,
-            message: "未找到指定的商品，無法更新",
-          });
-        }
-  
-        // 更新成功
-        res.json({
-          success: true,
-          message: "商品資訊更新成功",
-        });
-      }
-    );
-  });
 router.post('/api/member/register', function(req, res) {
   // 獲取註冊表單資料
   const email = encodeURIComponent(req.body.email).replace("%40","@");
@@ -356,10 +301,98 @@ router.post('/api/order/SubmitOrder', function (req, res, next) {
           return res.status(500).json({ success: false, message: '提交訂單詳細資料失敗' });
         }
 
+
+        let updateStockSql = '';
+        const stockUpdates = items.map((item, index) => {
+          updateStockSql += `
+            UPDATE product 
+            SET Quantity = Quantity - ${item.Quantity} 
+            WHERE product_id = ${item.Product_Id};
+          `;
+        });
+
+        // 執行更新庫存的 SQL 語句
+        dp.query(updateStockSql, function (err) {
+          if (err) {
+            console.error('更新庫存失敗:', err);
+            return res.status(500).json({ success: false, message: '更新庫存失敗' });
+          }
+
+          // 訂單提交成功
+          return res.json({ success: true, message: '訂單提交成功', orderId });
+        });
+
         // 訂單提交成功
-        return res.json({ success: true, message: '訂單提交成功', orderId });
+
       });
     }
   );
 });
+
+router.get('/api/order/GetOrders', function(req, res, next) {
+  let member_id = req.query.member_id;
+
+  // 查詢訂單基本資料
+  var sql = `
+    SELECT O.Order_Id, O.Fee, O.Order_date,O.Status
+    FROM _order O
+    WHERE O.Member_Id = '${member_id}';
+  `;
+
+  dp.query(sql, function(err, result) {
+    if (err) {
+      console.log("查詢錯誤", err);
+      res.status(500).send({ success: false, message: "查詢訂單失敗" });
+      return;
+    } else {
+      // 組合訂單和商品資料
+      const orders = [];
+      result.forEach(order => {
+        // 查詢每個訂單的商品詳情
+        var itemSql = `
+          SELECT P.Image_path, P.Product_name, OD.Quantity, OD.Price
+          FROM order_details OD
+          JOIN product P ON P.product_id = OD.Product_Id
+          WHERE OD.Order_Id = '${order.Order_Id}';
+        `;
+        
+        dp.query(itemSql, function(err, itemResult) {
+          if (err) {
+            console.log("查詢商品詳情錯誤", err);
+          } else {
+            // 組合商品資料到訂單的 items 陣列
+            order.items = itemResult;
+            //console.log(order)
+
+            // 將組合好的訂單推入 orders 陣列
+            orders.push(order);
+
+            // 當所有訂單資料和商品資料都查詢完成後回傳結果
+            if (orders.length === result.length) {
+              console.log(orders)
+              res.send({ success: true, data: orders });
+            }
+          }
+        });
+      });
+    }
+  });
+});
+
+router.get('/api/order/GetDetailOrders',function(req,res,next){
+  let member_id =  req.query.member_id;
+  var sql = `select P.Image_path,P.Product_name,OD.quantity,OD.Price
+              from _order O
+              JOIN order_details OD ON OD.Order_Id = O.Order_Id
+              JOIN product P ON P.product_id = OD.Product_Id
+              where O.Member_Id = '${member_id}' ; `;
+  dp.query(sql,function(err,result){
+    if(err){
+      console.log("查詢錯誤");
+    }else{
+      console.log(result);
+      res.send(result);
+    }
+ });
+})
 module.exports = router;

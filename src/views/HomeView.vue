@@ -52,7 +52,7 @@ import HeadMenu from '@/components/HeadMenu.vue'
 import Slidshowimage from '@/components/SlideshowImage.vue'
 import { useCookies } from "vue3-cookies";
 const { cookies } = useCookies();
-console.log(cookies.get('LoggedIn'));
+
 export default {
   name: 'HomeView' ,
   components: {

@@ -7,6 +7,7 @@
     <!-- 新增商品按鈕 -->
     <div class="add-product-button">
       <button @click="goToAddProductPage">新增商品</button>
+      <button @click="goToSearchBuyersPage">查詢訂單</button>
     </div>
 
     <!-- 商品表格區域 -->
@@ -49,6 +50,7 @@ import axios from "axios";
 import { useCookies } from "vue3-cookies";
 const { cookies } = useCookies();
 import { jwtDecode } from "jwt-decode";
+
 export default {
   data() {
     return {
@@ -69,6 +71,7 @@ export default {
     },
     async fetchSellerProducts() {
       try {
+
         const response = await axios.get("http://localhost:3002/seller/api/products", {
           params: { sellerId: this.sellerId },
         });
@@ -96,7 +99,7 @@ export default {
     },
     async deleteProduct(productId) {
       try {
-        const response = await axios.delete(`http://localhost:3002/api/seller/products/${productId}`);
+        const response = await axios.delete(`http://localhost:3002/seller/api/products/${productId}`);
         if (response.data.success) {
           alert(`商品 ID: ${productId} 已成功刪除！`);
           this.fetchSellerProducts();
@@ -207,6 +210,9 @@ h1 {
 .add-product-button {
   margin: 20px 0;
   text-align: center;
+  justify-content: center; /* 居中排列按鈕 */
+  display: flex; /* 使用 Flexbox 使按鈕並排 */
+  gap: 10px; /* 設定按鈕之間的間隔 */
 }
 
 .add-product-button button {

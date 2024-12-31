@@ -16,6 +16,8 @@ router.post("/api/updateProduct", (req, res) => {
     const Quantity = req.body.quantity; 
     const Descrip =  req.body.description; 
     const Base64 =  req.body.base64 ; 
+    const memberId = req.body.memberid ; 
+
     // 確保必須欄位不為空
     if ( !Product_name || !Price || !Quantity || Descrip === undefined) {
       return res.status(400).json({
@@ -26,17 +28,17 @@ router.post("/api/updateProduct", (req, res) => {
   
     // 更新商品資訊的 SQL 語句
     const sql = `
-            INSERT INTO product(Product_name,Quantity,Price,Descrip,Image_path) Value(
+            INSERT INTO product(Product_name,Quantity,Price,Descrip,Image_path,Seller_id) 
+            Value(
             '${Product_name}',
             '${Price}',
             '${Quantity}',
             '${Descrip}',
-            '${Base64}'
-            ); 
+            '${Base64}',
+            '${memberId}'
+            ) 
         `
-        console.log(Product_name);
     ;
-  
     // 執行 SQL 更新操作
     dp.query(sql,(err, result) => {
         if (err) {
