@@ -59,6 +59,18 @@ const routes = [
     path: '/store',
     name: 'SellerStore',
     component: SellerStore,
+    children: [
+      {
+        path: 'orders',  // 設定一個訂單頁面的路徑
+        name: 'SellerOrders',
+        component: () => import('@/views/SellerOrdersView.vue')  // 動態引入訂單頁面組件
+      },
+      {
+        path: 'products',  // 新增路由，顯示商品列表
+        name: 'SellerProducts',
+        component: () => import('@/views/SellerProductsView.vue'),  // 動態引入商品列表組件
+      }
+    ]
   },
   {
     path: '/editProduct/:id',

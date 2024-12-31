@@ -379,20 +379,5 @@ router.get('/api/order/GetOrders', function(req, res, next) {
   });
 });
 
-router.get('/api/order/GetDetailOrders',function(req,res,next){
-  let member_id =  req.query.member_id;
-  var sql = `select P.Image_path,P.Product_name,OD.quantity,OD.Price
-              from _order O
-              JOIN order_details OD ON OD.Order_Id = O.Order_Id
-              JOIN product P ON P.product_id = OD.Product_Id
-              where O.Member_Id = '${member_id}' ; `;
-  dp.query(sql,function(err,result){
-    if(err){
-      console.log("查詢錯誤");
-    }else{
-      console.log(result);
-      res.send(result);
-    }
- });
-})
+
 module.exports = router;

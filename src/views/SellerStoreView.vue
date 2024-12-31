@@ -7,41 +7,12 @@
     <!-- 新增商品按鈕 -->
     <div class="add-product-button">
       <button @click="goToAddProductPage">新增商品</button>
-      <button @click="goToSearchBuyersPage">查詢訂單</button>
+      <button @click="goToSearchOrdersPage">查詢訂單</button>
+      <button @click="goToSearchProductPage">查詢所有商品</button>
     </div>
-
+    <router-view></router-view>
     <!-- 商品表格區域 -->
-    <div class="product-table">
-      <h2>商品列表</h2>
-      <table border="1">
-        <thead>
-          <tr>
-            <th>商品編號</th>
-            <th>商品名稱</th>
-            <th>庫存數量</th>
-            <th>價格</th>
-            <th>商品圖片</th> <!-- 新增圖片列 -->
-            <th>操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="product in sellerProducts" :key="product.Product_Id">
-            <td>{{ product.Product_Id }}</td>
-            <td>{{ product.Product_name }}</td>
-            <td>{{ product.Quantity }}</td>
-            <td>{{ product.Price }}</td>
-            <!-- 顯示圖片 -->
-            <td>
-              <img v-if="product.Image_path" :src= product.Image_path alt="Product Image" width="100" height="100">
-            </td>
-            <td>
-              <button class="edit-button" @click="editProduct(product.Product_Id)">編輯</button>
-              <button class="delete-button" @click="confirmDeleteProduct(product.Product_Id)">刪除</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+
   </div>
 </template>
 
@@ -62,6 +33,12 @@ export default {
     this.fetchSellerProducts(); // 請求商品資料
   },
   methods: {
+    goToSearchProductPage(){
+      this.$router.push("/store/products");  // 跳轉到訂單頁面
+    },
+    goToSearchOrdersPage() {
+      this.$router.push("/store/orders");  // 跳轉到訂單頁面
+    },
     goToMainPage() {
       this.$router.push("/"); // 跳回主頁
     },
