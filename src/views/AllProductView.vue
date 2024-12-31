@@ -1,4 +1,3 @@
-<!-- GoodsView 實體商品 -->
 <template>
   <div class="home">
     <!-- Header -->
@@ -7,23 +6,27 @@
     </header>
 
     <!-- 主內容 -->
-    <v-container class="main-container" fluid >
+    <v-container class="main-container" fluid>
       <h1 class="new-arrival-title">グッズ</h1>
       <h2 class="new-arrival-subtitle">Goods</h2>
 
-      <v-row  >
-        <v-col  v-for="(product, index) in products" :key="index" :cols="3" class = "AllProduct" >
-          <a :href="'/product/' + index">
-          <ProductCard
-            :image="product.image"
-            :category="product.category"
-            :name="product.name"
-            :price="product.price"
-          />
-        </a>
+      <v-row>
+        <v-col
+          v-for="(product, index) in products"
+          :key="index"
+          :cols="3"
+          class="AllProduct"
+        >
+          <a :href="'/product/' + product.product_id">
+            <ProductCard
+              :image="product.Image_path"
+             
+              :name="product.Product_name"
+              :price="`¥${product.Price}`"
+            />
+          </a>
         </v-col>
       </v-row>
-      
     </v-container>
   </div>
 </template>
@@ -31,6 +34,7 @@
 <script>
 import HeadMenu from "@/components/HeadMenu.vue";
 import ProductCard from "@/components/ProductCard.vue";
+import axios from "axios";
 
 export default {
   name: "HomeView",
@@ -40,77 +44,40 @@ export default {
   },
   data() {
     return {
-      products: [
-        {
-          image: require("../assets/test1.png"), // 使用 require 來正確解析圖片
-          category: "グッズ",
-          name: "橘ひなの　誕生日記念2024",
-          price: "¥1800 より",
-        },
-        {
-          image: require("../assets/test2.png"),
-          category: "グッズ",
-          name: "紡木こかげ　誕生日記念2024",
-          price: "¥1500 より",
-        },
-        {
-          image: require("../assets/test3.png"),
-          category: "デジタルグッズ",
-          name: "ぶいすぽっ！看病ボイス2024",
-          price: "¥500 より",
-        },
-        {
-          image: require("../assets/test4.png"),
-          category: "グッズ",
-          name: "【メンバーデザイン】いぬべにTシャツ【八雲べに】",
-          price: "¥4000",
-        },
-        {
-          image: require("../assets/test5.png"),
-          category: "グッズ",
-          name: "VSPO! GEAR ガラスマウスパッド",
-          price: "¥16940",
-        },
-        {
-          image: require("../assets/test6.png"),
-          category: "グッズ",
-          name: "【メンバーデザイン】清楚ですがTシャツ【藍沢エマ】",
-          price: "¥4000 より",
-        },
-        {
-          image: require("../assets/test7.png"),
-          category: "グッズ",
-          name: "【メンバーデザイン】ぽやねこパーカー【花芽すみれ】",
-          price: "¥7000",
-        },
-        {
-          image: require("../assets/test8.png"),
-          category: "グッズ",
-          name: "【メンバーデザイン】ありゃTシャツ【花芽なずな】",
-          price: "¥4000",
-        },
-        // 更多商品...
-      ],
+      products: [], // 初始化為空陣列
     };
-
+  },
+  methods: {
+    fetchProducts() {
+      axios
+        .get("http://localhost:3002/api/product/GetAllProduct")
+        .then((response) => {
+          this.products = response.data.map((product) => ({
+            product_id: product.product_id,
+            Image_path: product.Image_path,
+            Product_name: product.Product_name,
+            Price: product.Price,
+            Descip: product.Descip, // 商品描述（若需要展示）
+            Quantity: product.Quantity, // 庫存數量（若需要展示）
+          }));
+        })
+        .catch((error) => {
+          console.error("API 請求錯誤", error);
+        });
+    },
+  },
+  mounted() {
+    this.fetchProducts(); // 組件掛載後請求商品資料
   },
 };
 </script>
 
 <style scoped>
-/* Header 樣式 */
-
-
-
-/* 主內容容器 */
 .main-container {
-
-  margin-top: 100px; /* 留出 Header 的高度 */
+  margin-top: 100px;
   padding: 20px;
-
 }
 
-/* New Arrival 標題樣式 */
 .new-arrival-title {
   text-align: center;
   font-size: 24px;

@@ -25,7 +25,13 @@
   
         <h2>支付方式</h2>
         <v-select v-model="paymentMethod" :items="paymentOptions" label="選擇支付方式" required></v-select>
-  
+        <h2>取貨方式</h2>
+        <v-select 
+          v-model="pickupMethod" 
+          :items="pickupOptions" 
+          label="選擇取貨方式" 
+          required
+        ></v-select>
         <div class="total-price">
           <h3>總金額: {{ totalAmount }}円</h3>
         </div>
@@ -55,6 +61,8 @@
         shippingAddress: "",
         paymentMethod: "",
         paymentOptions: ["信用卡", "現金支付", "線上支付"], // 支付方式選項
+        pickupMethod: "", // 新增的取貨方式
+        pickupOptions: ["宅配到府", "超商取貨", "店內取貨"], // 取貨方式選項
       };
     },
     computed: {
@@ -77,7 +85,7 @@
               this.cartItems = response.data.map((item) => {
                 return {
                   ...item,
-                  Image_path: require(`@/assets/images/${item.Image_path}`),
+                  Image_path: item.Image_path,
                 };
               });
             })
@@ -91,27 +99,42 @@
       },
       submitOrder() {
         const orderData = {
-          member_id: jwtDecode(cookies.get('token')).Member_Id,
+          member_id: jwtDecode(cookies.get("token")).Member_Id,
           items: this.cartItems,
           shippingAddress: this.shippingAddress,
           paymentMethod: this.paymentMethod,
+          pickupMethod: this.pickupMethod,
           totalAmount: this.totalAmount,
         };
-  
-        axios.post("http://localhost:3002/api/order/SubmitOrder", orderData)
-          .then((response) => {
-            if (response.data.success) {
-              alert("訂單提交成功!");
-              this.$router.push("/order-success"); // 訂單成功後跳轉到成功頁面
-            } else {
-              alert("訂單提交失敗，請稍後再試");
-            }
-          })
-          .catch((error) => {
-            console.error("提交訂單失敗", error);
-            alert("訂單提交失敗");
-          });
-      },
+
+          axios
+            .post("http://localhost:3002/api/order/SubmitOrder", orderData)
+            .then((response) => {
+              if (response.data.success) {
+                // 呼叫 API 清空購物車
+                const token = cookies.get("token");
+                const memberId = jwtDecode(token).Member_Id;
+
+                axios
+                  .delete(`http://localhost:3002/api/cart/ClearCart`, { params: { member_id: memberId } })
+                  .then(() => {
+                    alert("訂單提交成功!");
+                    this.cartItems = []; // 前端清空購物車
+                    this.$router.push("/order-success"); // 跳轉到訂單成功頁面
+                  })
+                  .catch((error) => {
+                    console.error("清空購物車失敗", error);
+                    alert("清空購物車時發生問題，但訂單已提交成功");
+                  });
+              } else {
+                alert("訂單提交失敗，請稍後再試");
+              }
+            })
+            .catch((error) => {
+              console.error("提交訂單失敗", error);
+              alert("訂單提交失敗");
+            });
+        },
     },
     mounted() {
       this.fetchCartItems(); // 組件掛載後立刻加載購物車資料

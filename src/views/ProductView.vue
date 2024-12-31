@@ -61,7 +61,7 @@ export default {
           this.product_info = response.data;
           this.Descrip = response.data[0].Descrip.replace(/\n/g, "<br>");
           console.log(response.data[0].Image_path);
-          this.test_path = require(`@/assets/images/${response.data[0].Image_path}`);
+          this.test_path =response.data[0].Image_path;
           console.log(this.Descrip);
           console.log(this.product_info.data[0].Image_path);
         })

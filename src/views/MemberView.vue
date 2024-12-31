@@ -4,6 +4,27 @@
     <div class="content">
       <h1>Welcome to the Member Page</h1>
       <p>Manage your account and enjoy our services!</p>
+
+      <!-- 訂單列表 -->
+      <div class="order-section">
+        <h2>Your Orders</h2>
+        <ul class="order-list" v-if="orders.length > 0">
+          <li v-for="(order, index) in orders" :key="index" class="order-item">
+            <p>Order ID: {{ order.id }}</p>
+            <p>Total: {{ order.totalAmount }}円</p>
+            <p>Date: {{ order.date }}</p>
+            <p>Items:</p>
+            <ul>
+              <li v-for="(item, i) in order.items" :key="i">
+                {{ item.Product_Name }} x {{ item.Quantity }} - {{ item.price }}円
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <p v-else>No orders found.</p>
+      </div>
+
+      <!-- 登出按鈕 -->
       <button class="sign_out" type="button" @click="signout">Sign Out</button>
     </div>
   </div>
@@ -13,14 +34,43 @@
 import { useCookies } from "vue3-cookies";
 const { cookies } = useCookies();
 
-import HeadMenu from '@/components/HeadMenu.vue'
+import axios from "axios";
+import HeadMenu from '@/components/HeadMenu.vue';
 
 export default {
   name: 'MemberView',
   components: {
     HeadMenu
   },
+  data() {
+    return {
+      orders: [] // 儲存用戶的訂單資料
+    };
+  },
   methods: {
+    fetchOrders() {
+      const token = cookies.get('token');
+      if (token) {
+        const memberId = this.decodeToken(token).Member_Id;
+        axios.get('http://localhost:3002/api/order/GetOrders', {
+          params: { member_id: memberId }
+        })
+        .then(response => {
+          this.orders = response.data.orders || [];
+        })
+        .catch(error => {
+          console.error('Failed to fetch orders:', error);
+        });
+      }
+    },
+    decodeToken(token) {
+      try {
+        return JSON.parse(atob(token.split('.')[1])); // 簡單解析 JWT
+      } catch (error) {
+        console.error('Failed to decode token:', error);
+        return {};
+      }
+    },
     signout() {
       try {
         cookies.remove('token');
@@ -30,8 +80,11 @@ export default {
         alert("Logout failed, please try again.");
       }
     }
+  },
+  mounted() {
+    this.fetchOrders(); // 頁面載入時獲取訂單資料
   }
-}
+};
 </script>
 
 <style scoped>
@@ -49,7 +102,7 @@ export default {
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 30px;
-  max-width: 400px;
+  max-width: 600px;
   width: 100%;
   text-align: center;
 }
@@ -67,6 +120,35 @@ p {
   margin-bottom: 30px;
 }
 
+.order-section {
+  text-align: left;
+  margin-top: 20px;
+}
+
+.order-section h2 {
+  font-size: 22px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.order-list {
+  list-style: none;
+  padding: 0;
+}
+
+.order-item {
+  background-color: #f4f4f4;
+  margin-bottom: 15px;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.order-item p {
+  margin: 5px 0;
+  color: #555;
+}
+
 .sign_out {
   background-color: #9954f3;
   color: white;
@@ -77,28 +159,10 @@ p {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin-top: 20px;
 }
 
 .sign_out:hover {
   background-color: #7f33c8;
-}
-
-@media screen and (max-width: 768px) {
-  .content {
-    padding: 20px;
-  }
-
-  h1 {
-    font-size: 24px;
-  }
-
-  p {
-    font-size: 14px;
-  }
-
-  .sign_out {
-    font-size: 16px;
-    padding: 10px 25px;
-  }
 }
 </style>

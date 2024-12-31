@@ -113,7 +113,7 @@ export default {
         this.cartItems = response.data.map((item) => {
           return {
             ...item,
-            Image_path: require(`@/assets/images/${item.Image_path}`), // 解析圖片路徑
+            Image_path: item.Image_path, // 解析圖片路徑
           };
         });
       })

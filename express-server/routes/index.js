@@ -127,7 +127,62 @@ router.post('/api/cart/PostProductCart', function(req, res, next) {
     }
   });
 });
+  router.post("/api/seller/updateProduct", (req, res) => {
+
+    const Product_name =  req.body.name ; 
+    const Price =  req.body.price ; 
+    const Quantity = req.body.quantity; 
+    const Descrip =  req.body.description; 
+    const Base64 =  req.body.base64 ; 
+
+
+    // 確保必須欄位不為空
+    if ( !Product_name || !Price || !Quantity || Descrip === undefined) {
+      return res.status(400).json({
+        success: false,
+        message: "請提供完整的商品資訊",
+      });
+    }
+
+    // 更新商品資訊的 SQL 語句
+    const sql = `
+            INSERT INTO product(Product_name,Quantity,Price,Descrip,Image_path) 
+            Value(
+            '${Product_name}',
+            '${Price}',
+            '${Quantity}',
+            '${Descrip}',
+            '${Base64}',
+            ) 
+        `
+    ;
   
+    // 執行 SQL 更新操作
+    dp.query(sql,(err, result) => {
+        if (err) {
+          console.error("更新商品失敗:", err);
+          return res.status(500).json({
+            success: false,
+            message: "更新商品資訊失敗，請稍後再試",
+          });
+        }
+  
+        // 檢查是否有更新的行數
+        if (result.affectedRows === 0) {
+          return res.status(404).json({
+            success: false,
+            message: "未找到指定的商品，無法更新",
+          });
+        }
+  
+        // 更新成功
+        res.json({
+          success: true,
+          message: "商品資訊更新成功",
+        });
+      }
+    );
+  });
 router.post('/api/member/register', function(req, res) {
   // 獲取註冊表單資料
   const email = encodeURIComponent(req.body.email).replace("%40","@");
@@ -229,5 +284,81 @@ router.delete('/api/cart/RemoveCartItem', function(req, res, next) {
       return res.json({ success: false, message: '購物車中未找到該商品' });
     }
   });
+});
+
+router.delete('/api/cart/ClearCart', function(req, res, next) {
+  const memberId = req.query.member_id;
+
+  const sql = `DELETE FROM cart WHERE Member_Id = ?`;
+
+  dp.query(sql, [memberId], function(err, result) {
+    if (err) {
+      console.error("刪除錯誤", err);
+      return res.status(500).json({ success: false, message: '移除商品失敗' });
+    }
+
+    if (result.affectedRows > 0) {
+      return res.json({ success: true, message: '商品已成功移除' });
+    } else {
+      return res.json({ success: false, message: '購物車中未找到該商品' });
+    }
+  });
+});
+
+router.post('/api/order/SubmitOrder', function (req, res, next) {
+
+
+  const { member_id, items, shippingAddress, paymentMethod,pickupMethod,totalAmount } = req.body;
+
+
+  // 驗證請求參數
+  if (!member_id || !items || !shippingAddress || !paymentMethod || !totalAmount || !pickupMethod) {
+    return res.status(400).json({ success: false, message: '缺少必要參數' });
+  }
+
+  // 準備 SQL 插入語句
+  const insertOrderSql = `
+    INSERT INTO \`_order\` (Member_Id, Address, Payment_method,Takeing_method,Fee, Order_date,Status)
+    VALUES (?, ?, ?, ?, ? , NOW(),'BackOrder');
+  `;
+
+  // 插入訂單主記錄
+  dp.query(
+    insertOrderSql,
+    [member_id, shippingAddress, paymentMethod, pickupMethod ,totalAmount],
+    function (err, orderResult) {
+      if (err) {
+        console.error('插入訂單主記錄失敗:', err);
+        return res.status(500).json({ success: false, message: '提交訂單失敗' });
+      }
+
+      const orderId = orderResult.insertId; // 取得新插入訂單的 ID
+      console.log(orderId)
+      // 構建訂單詳細資料的插入語句
+      const insertOrderDetailsSql = `
+        INSERT INTO order_details (Order_Id, Product_Id, Quantity, Price)
+        VALUES ?;
+      `;
+
+      // 構建批量插入的資料
+      const orderDetailsData = items.map((item) => [
+        orderId,
+        item.Product_Id,
+        item.Quantity,
+        item.price,
+      ]);
+
+      // 插入訂單詳細資料
+      dp.query(insertOrderDetailsSql, [orderDetailsData], function (err) {
+        if (err) {
+          console.error('插入訂單詳細資料失敗:', err);
+          return res.status(500).json({ success: false, message: '提交訂單詳細資料失敗' });
+        }
+
+        // 訂單提交成功
+        return res.json({ success: true, message: '訂單提交成功', orderId });
+      });
+    }
+  );
 });
 module.exports = router;

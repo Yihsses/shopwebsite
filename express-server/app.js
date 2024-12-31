@@ -8,11 +8,14 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const jwt = require("jsonwebtoken");
 const { expressjwt } = require('express-jwt');
+var bodyParser = require('body-parser');
 var app = express();
 const cors = require('cors');  
 
 const secretKey = 'DEMO';
 
+app.use(bodyParser.json({limit: '5000mb'}));
+app.use(bodyParser.urlencoded({limit: '5000mb', extended: true}));
 
 app.use(cors({  
     origin:['http://localhost:8080'],
@@ -54,6 +57,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
