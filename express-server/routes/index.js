@@ -42,7 +42,7 @@ router.get('/api/member/CheckMemberAccount',function(req,res,next){
   const expressJWT = require("express-jwt");
   const secretKey = 'DEMO';
 
-  var sql = `SELECT Member_Id, Password FROM member WHERE Email = '${account}' AND Password = '${account_password}'`;
+  var sql = `SELECT Member_Id,Authority, Password FROM member WHERE Email = '${account}' AND Password = '${account_password}'`;
  
   dp.query(sql,function(err,result){
     if(err){
@@ -54,10 +54,11 @@ router.get('/api/member/CheckMemberAccount',function(req,res,next){
           message: '帳號或密碼錯誤'
       });
       }else{
-       // console.log(result[0].Member_Id) ; 
+        // console.log(result[0].Authority) ; 
         const payload = {
           Member_Id : result[0].Member_Id , 
           LoggedIn: true,
+          Authority : result[0].Authority
       }
         const token = jwt.sign(payload, secretKey, { expiresIn: '600s' });
         //  res.cookie('LoggedIn', true, {maxAge:600000}); 

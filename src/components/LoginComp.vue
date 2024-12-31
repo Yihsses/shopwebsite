@@ -56,7 +56,7 @@ export default {
                 //   console.log(response.data);
                 if (response.data.success) {
                     cookies.set('token', response.data.token);
-                    console.log(jwtDecode(cookies.get('token')).Member_Id)
+                    console.log(jwtDecode(cookies.get('token')).Authority)
                     alert('登入成功');
                     this.$router.push('/');
 

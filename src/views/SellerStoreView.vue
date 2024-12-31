@@ -1,6 +1,7 @@
 <template>
   <div class="seller-dashboard">
     <button class="back-button" @click="goToMainPage">回到主介面</button>
+    <button class="logout-button" @click="logout">登出</button> <!-- 登出按鈕 -->
     <h1>賣家管理介面</h1>
 
     <!-- 新增商品按鈕 -->
@@ -42,14 +43,17 @@
     </div>
   </div>
 </template>
+
 <script>
 import axios from "axios";
-
+import { useCookies } from "vue3-cookies";
+const { cookies } = useCookies();
+import { jwtDecode } from "jwt-decode";
 export default {
   data() {
     return {
       sellerProducts: [], // 賣家商品列表
-      sellerId: 1, // 假設賣家 ID
+      sellerId: jwtDecode(cookies.get('token')).Member_Id, // 假設賣家 ID
     };
   },
   mounted() {
@@ -57,7 +61,7 @@ export default {
   },
   methods: {
     goToMainPage() {
-      this.$router.push("/");
+      this.$router.push("/"); // 跳回主頁
     },
     // 跳轉到新增商品頁面
     goToAddProductPage() {
@@ -105,6 +109,11 @@ export default {
         alert("刪除失敗，請稍後再試。");
       }
     },
+    // 登出功能
+    logout() {
+      cookies.remove('token'); // 清除 token
+      this.$router.push("/login"); // 轉到登入頁面
+    }
   },
 };
 </script>
@@ -131,6 +140,22 @@ export default {
 
 .back-button:hover {
   background-color: #0056b3;
+}
+
+.logout-button {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  padding: 10px 20px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  background-color: #c82333;
 }
 
 h1 {

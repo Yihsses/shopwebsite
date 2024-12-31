@@ -80,14 +80,20 @@ const router = createRouter({
 // 添加路由守衛
 router.beforeEach((to, from, next) => {
   // 如果進入的路徑是 member 頁面且用戶未登入
+
+
   if (to.name === 'member') {
     // 檢查是否有 token 且 token 是否有效
     if (!cookies.get('token') || !jwtDecode(cookies.get('token')).LoggedIn) {
       // 若未登入，重定向到登入頁面
       next({ name: 'login' });
     } else {
+      if(jwtDecode(cookies.get('token')).Authority == "seller"){
+        next({name : 'SellerStore'});
+      }else{
+        next();
+      }
       // 若已登入，繼續訪問 member 頁面
-      next();
     }
   } else {
     // 其他頁面，正常進行路由跳轉
