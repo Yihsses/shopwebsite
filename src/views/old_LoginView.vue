@@ -54,7 +54,7 @@ export default {
                     }
                 });
              //   console.log(response.data);
-                if (response.data.success) {
+                if (response.data.success || false) {
                     cookies.set('token',response.data.token);
 
                     alert('登入成功');

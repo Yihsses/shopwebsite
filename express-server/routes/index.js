@@ -5,7 +5,7 @@ var mysql = require('mysql');
 var dp = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: '1234',
+    password: '0802',
     database:'vspo_dp',
     port: 3306
 });
