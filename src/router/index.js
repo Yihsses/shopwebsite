@@ -9,6 +9,7 @@ import CheckoutView from '@/views/CheckoutView.vue'
 import SellerStore from '@/views/SellerStoreView.vue'
 import EditProduct from '@/views/EditProductView.vue'
 import AddProductView from '@/views/AddProductView.vue'
+import AdminManageAccountView from '@/views/AdminManageAccountView.vue' // admin路由
 import { jwtDecode } from "jwt-decode";
 import { useCookies } from "vue3-cookies";
 const { cookies } = useCookies();
@@ -81,6 +82,11 @@ const routes = [
     path: '/addProduct',
     name: 'AddProduct',
     component: AddProductView,
+  },
+  {   // 新增admin路由
+    path: '/adminManageAccount',
+    name: 'AdminManageAccount',
+    component: AdminManageAccountView,
   }
 ];
 

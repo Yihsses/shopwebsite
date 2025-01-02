@@ -10,6 +10,7 @@ var dp = mysql.createPool({
     port: 3306
 });
 
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });

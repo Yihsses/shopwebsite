@@ -10,6 +10,7 @@ var dp = mysql.createPool({
     port: 3306
 });
 
+
 router.post("/api/updateProduct", (req, res) => {
     const Product_name =  req.body.name ; 
     const Price =  req.body.price ; 

@@ -6,13 +6,15 @@ var logger = require('morgan');
 var sellerRouter = require('./routes/seller')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var adminRouter = require('./routes/admin');
 const jwt = require("jsonwebtoken");
 const { expressjwt } = require('express-jwt');
-var bodyParser = require('body-parser');
 var app = express();
 const cors = require('cors');  
 
 const secretKey = 'DEMO';
+
+
 
 app.use(bodyParser.json({limit: '5000mb'}));
 app.use(bodyParser.urlencoded({limit: '5000mb', extended: true}));
@@ -58,11 +60,10 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/seller', sellerRouter);
+app.use('/admin', adminRouter);
 app.use(session({
   secret: 'chh',
   cookie:{
