@@ -11,7 +11,7 @@ const jwt = require("jsonwebtoken");
 const { expressjwt } = require('express-jwt');
 var app = express();
 const cors = require('cors');  
-
+var bodyParser = require('body-parser');
 const secretKey = 'DEMO';
 
 

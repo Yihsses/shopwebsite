@@ -31,23 +31,12 @@
         </v-row>
     </div>
   <div class = "testlogic">
-    <a>登入測試:{{loginstate}}</a>
+
     </div>
 </template>
 
 <script>
-// @ is an alias to /src
-// import axios from "axios"
 
-// axios.get('http://localhost:3002/api/product/GetAllProduct')
-//       .then(response => {
-//         console.log("ok");
-//          console.log(response.data[0].Image_path);
-//       })
-//       .catch(error => {
-//         console.log("notok");
-//         console.error(error);
-//       });
 import HeadMenu from '@/components/HeadMenu.vue'
 import Slidshowimage from '@/components/SlideshowImage.vue'
 import { useCookies } from "vue3-cookies";
@@ -91,7 +80,7 @@ export default {
         for (let i = index; i <= index+3; i++) {
           filearr.push({
             src: require(`../assets/test${i}.png`),
-            description: `商品描述 ${i}` // 添加描述
+            description: `` // 添加描述
           });
         }
         return filearr;

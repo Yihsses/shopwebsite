@@ -133,7 +133,7 @@
     methods: {
       async register() {
         try {
-          const response = await axios.post('http://localhost:3002/seller/api/seller/updateProduct', {
+          const response = await axios.post('http://localhost:3002/api/member/register', {
             email: this.email,
             password: this.password,
             username: this.firstname + this.lastname,
