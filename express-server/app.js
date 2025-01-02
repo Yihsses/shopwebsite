@@ -17,6 +17,10 @@ const secretKey = 'DEMO';
 app.use(bodyParser.json({limit: '5000mb'}));
 app.use(bodyParser.urlencoded({limit: '5000mb', extended: true}));
 
+
+app.use(bodyParser.json({limit: '5000mb'}));
+app.use(bodyParser.urlencoded({limit: '5000mb', extended: true}));
+
 app.use(cors({  
     origin:['http://localhost:8080'],
     methods:['POST','GET','DELETE'],
@@ -41,7 +45,7 @@ var mysql = require('mysql');
 var dp = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: '0802',
+    password: '1234',
     database:'node.js-test',
     port: 3306
 });
