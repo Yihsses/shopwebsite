@@ -15,12 +15,17 @@ const cors = require('cors');
 const secretKey = 'DEMO';
 
 
+
+app.use(bodyParser.json({limit: '5000mb'}));
+app.use(bodyParser.urlencoded({limit: '5000mb', extended: true}));
+
 app.use(cors({  
     origin:['http://localhost:8080'],
     methods:['POST','GET','DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
 }));
+
 app.all('*', function (req, res, next) {
   let originHeader=req.headers.origin;
   res.header("Access-Control-Allow-Origin", originHeader);
