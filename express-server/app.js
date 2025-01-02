@@ -25,7 +25,6 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
 }));
-
 app.all('*', function (req, res, next) {
   let originHeader=req.headers.origin;
   res.header("Access-Control-Allow-Origin", originHeader);
@@ -44,7 +43,7 @@ var mysql = require('mysql');
 var dp = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: '0802',
+    password: '1234',
     database:'node.js-test',
     port: 3306
 });
