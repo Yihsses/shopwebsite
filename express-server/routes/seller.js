@@ -5,10 +5,11 @@ var mysql = require('mysql');
 var dp = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: '0802',
+    password: '1234',
     database:'vspo_dp',
     port: 3306
 });
+
 
 router.post("/api/updateProduct", (req, res) => {
     const Product_name =  req.body.name ; 
