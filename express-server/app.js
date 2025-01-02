@@ -7,13 +7,15 @@ var sellerRouter = require('./routes/seller')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var adminRouter = require('./routes/admin');
+var bodyParser = require('body-parser');
 const jwt = require("jsonwebtoken");
 const { expressjwt } = require('express-jwt');
 var app = express();
 const cors = require('cors');  
 var bodyParser = require('body-parser');
 const secretKey = 'DEMO';
-
+app.use(bodyParser.json({limit: '5000mb'}));
+app.use(bodyParser.urlencoded({limit: '5000mb', extended: true}));
 
 
 app.use(bodyParser.json({limit: '5000mb'}));
