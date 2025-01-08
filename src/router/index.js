@@ -99,7 +99,6 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   // 如果進入的路徑是 member 頁面且用戶未登入
 
-
   if (to.name === 'member') {
     // 檢查是否有 token 且 token 是否有效
     if (!cookies.get('token') || !jwtDecode(cookies.get('token')).LoggedIn) {
@@ -108,9 +107,13 @@ router.beforeEach((to, from, next) => {
     } else {
       if(jwtDecode(cookies.get('token')).Authority == "seller"){
         next({name : 'SellerStore'});
-      }else{
-        next();
       }
+      if(jwtDecode(cookies.get('token')).Authority == "admin"){
+        next({name : 'AdminManageAccount'});
+      }
+
+        next();
+
       // 若已登入，繼續訪問 member 頁面
     }
   } else {

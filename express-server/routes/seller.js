@@ -119,7 +119,7 @@ router.get('/api/products', function(req, res) {
   router.get('/api/orders/GetALLOrders',function(req,res,next){
     console.log(req.query)
     let member_id =   req.query.memberid;
-    var sql = `select P.Image_path,P.Product_name,OD.quantity,OD.Price,OD.Order_Id,M.username
+    var sql = `select P.Image_path,P.Product_name,OD.quantity,OD.Price,OD.Order_Id,M.username,O.Status
               from _order O
               JOIN order_details OD ON OD.Order_Id = O.Order_Id
               JOIN product P ON P.product_id = OD.Product_Id and P.Seller_id = '${member_id}'

@@ -61,10 +61,11 @@ export default {
                     this.$router.push('/');
 
                 } else {
-                    alert('登入失敗，帳號或密碼錯誤');
+                    alert('登入失敗');
                 }
             } catch (error) {
                 console.error(error);
+
                 alert('登入失敗，請檢查伺服器連接');
             }
 

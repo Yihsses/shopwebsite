@@ -17,7 +17,7 @@
             <td>{{ order.username }}</td>
             <td>{{ order.Product_name}}</td>
             <td>{{ order.quantity }}</td>
-            <td>{{ order.status }}</td>
+            <td>{{ order.Status }}</td>
           </tr>
         </tbody>
       </table>
@@ -129,7 +129,7 @@
   /* 訂單狀態顯示 */
   td:nth-child(5) {
     font-weight: bold;
-    color: #FFFF ; /* 改為灰色 */
+ 
   }
   
 

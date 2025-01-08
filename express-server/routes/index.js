@@ -10,7 +10,6 @@ var dp = mysql.createPool({
     port: 3306
 });
 
-
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
@@ -43,7 +42,7 @@ router.get('/api/member/CheckMemberAccount',function(req,res,next){
   const expressJWT = require("express-jwt");
   const secretKey = 'DEMO';
 
-  var sql = `SELECT Member_Id,Authority, Password FROM member WHERE Email = '${account}' AND Password = '${account_password}'`;
+  var sql = `SELECT Member_Id,Locked,Authority, Password FROM member WHERE Email = '${account}' AND Password = '${account_password}'`;
  
   dp.query(sql,function(err,result){
     if(err){
@@ -55,6 +54,12 @@ router.get('/api/member/CheckMemberAccount',function(req,res,next){
           message: '帳號或密碼錯誤'
       });
       }else{
+        if(result[0].Locked == "1"){
+          return res.json({
+            success: false,
+            message: '帳號被鎖定'
+        });
+        }
         // console.log(result[0].Authority) ; 
         const payload = {
           Member_Id : result[0].Member_Id , 
@@ -301,30 +306,39 @@ router.post('/api/order/SubmitOrder', function (req, res, next) {
           console.error('插入訂單詳細資料失敗:', err);
           return res.status(500).json({ success: false, message: '提交訂單詳細資料失敗' });
         }
-
-
-        let updateStockSql = '';
-        const stockUpdates = items.map((item, index) => {
-          updateStockSql += `
-            UPDATE product 
-            SET Quantity = Quantity - ${item.Quantity} 
-            WHERE product_id = ${item.Product_Id};
-          `;
-        });
-
-        // 執行更新庫存的 SQL 語句
-        dp.query(updateStockSql, function (err) {
-          if (err) {
-            console.error('更新庫存失敗:', err);
-            return res.status(500).json({ success: false, message: '更新庫存失敗' });
+      
+        // 使用一個函數來逐一執行每條更新語句
+        const updateStockSequentially = async () => {
+          for (const item of items) {
+            const updateStockSql = `UPDATE product SET Quantity = Quantity - ? WHERE product_id = ?;`;
+      
+            // 使用參數化查詢防止 SQL 注入
+            const params = [item.Quantity, item.Product_Id];
+            
+            try {
+              await new Promise((resolve, reject) => {
+                dp.query(updateStockSql, params, (err) => {
+                  if (err) return reject(err);
+                  resolve();
+                });
+              });
+            } catch (error) {
+              console.error('更新庫存失敗:', error);
+              return res.status(500).json({ success: false, message: '更新庫存失敗' });
+            }
           }
-
-          // 訂單提交成功
+      
+          // 如果所有更新都成功，返回成功響應
+        };
+      
+        // 執行逐一更新庫存的函數
+        try {
+          updateStockSequentially();
           return res.json({ success: true, message: '訂單提交成功', orderId });
-        });
+        }catch{
+          return res.json({ success: true, message: '訂單提交失敗', orderId });
 
-        // 訂單提交成功
-
+        }
       });
     }
   );

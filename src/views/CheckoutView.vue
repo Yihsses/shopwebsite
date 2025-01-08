@@ -120,7 +120,7 @@
                   .then(() => {
                     alert("訂單提交成功!");
                     this.cartItems = []; // 前端清空購物車
-                    this.$router.push("/order-success"); // 跳轉到訂單成功頁面
+                    this.$router.push('/'); // 跳轉到訂單成功頁面
                   })
                   .catch((error) => {
                     console.error("清空購物車失敗", error);
