@@ -1,5 +1,5 @@
 # vspo_project
-# demo:https://yihsses.github.io/shopwebsite/
+# demo video:https://youtu.be/xs2gegm0IgE
 ## Project setup
 ```
 npm install
